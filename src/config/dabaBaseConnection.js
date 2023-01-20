@@ -19,6 +19,3 @@ try {
 }
 
 export default db
-
-
-
