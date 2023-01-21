@@ -9,15 +9,12 @@ export async function logUserIn(req, res) {
         const userLoginRequest = req.sanitizedBody
 
         const user = await db.collection("users").findOne({ email: userLoginRequest.email })
-
         if (!user) return res.sendStatus(404)
 
         const PasswordIsCorrect = bcrypt.compareSync(userLoginRequest.password, user.password)
-
         if (!PasswordIsCorrect) return res.sendStatus(400)
 
         const userHasToken = await db.collection("tokens").findOne({ userId: user._id })
-
         if (!userHasToken) {
 
             const token = uuidv4()
@@ -31,12 +28,12 @@ export async function logUserIn(req, res) {
                 ...request, tokenDate: Date.now()
             })
 
-            if (insertToken.acknowledged === true) return res.status(200).send({
+            if (!(insertToken.acknowledged === true)) throw new Error            
+            
+            return res.status(200).send({
                 userId: user._id,
                 token: `Bearer ${token}`
             })
-
-            else throw new Error
         }
 
         return res.status(200).send({
@@ -44,7 +41,7 @@ export async function logUserIn(req, res) {
             token: `Bearer ${userHasToken.token}`
         })
 
-    } catch (err) {
+    } catch (err) {        
         console.error(err)
         return res.sendStatus(500)
     }

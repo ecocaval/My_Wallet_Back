@@ -12,7 +12,7 @@ export const UserLoginSchema = Joi.object({
     password: Joi.string().invalid("").required(),
 })
 
-export const UpdateUserSchema = Joi.object({
+export const UserUpdateSchema = Joi.object({
     name: Joi.string().invalid(""),
     email: Joi.string().email(),
     password: Joi.string().invalid("")

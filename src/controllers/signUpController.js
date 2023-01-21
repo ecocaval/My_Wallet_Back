@@ -2,8 +2,6 @@
 import bcrypt from "bcrypt"
 //* Configuration
 import db from "../config/dabaBaseConnection.js"
-//* functions
-import sanitizeInfo from "../validations/sanitizeInfo.js"
 
 export async function createUser(req, res) {
     try {
@@ -21,7 +19,7 @@ export async function createUser(req, res) {
 
         return res.sendStatus(201)
 
-    } catch (err) {
+    } catch (err) {        
         console.error(err)
         return res.sendStatus(500)
     }

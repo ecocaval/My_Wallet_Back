@@ -1,18 +1,14 @@
 //* Libraries
 import { ObjectId } from "mongodb"
-//* Schemas
-import { UpdateUserSchema } from "../schemas/UserSchema.js"
 //* Configuration
 import db from "../config/dabaBaseConnection.js"
-//* functions
-import sanitizeInfo from "../validations/sanitizeInfo.js"
 
 export async function getUsers(req, res) {
     try {
         let users = await db.collection("users").find().toArray()
         return res.status(200).send(users)
 
-    } catch (err) {
+    } catch (err) {        
         console.error(err)
         return res.sendStatus(500)
     }
@@ -25,10 +21,10 @@ export async function getUserById(req, res) {
         const userInDb = await db.collection("users").findOne({ _id: userId })
         if (!userInDb) return res.status(404).send("User not found.")
 
-        return res.status(200).send(sanitizeInfo(userInDb))
+        return res.status(200).send(userInDb)
 
-    } catch (err) {
-        console.error(err)        
+    } catch (err) {           
+        console.error(err)     
         return res.sendStatus(500)
     }
 }
@@ -42,7 +38,7 @@ export async function updateUser(req, res) {
         const userInDb = await db.collection("users").findOne({ _id: userId })
         if (!userInDb) return res.status(404).send("User not found.")
 
-        const userUpdateRequest = await UpdateUserSchema.validateAsync(sanitizeInfo(req.body), { abortEarly: false })
+        const userUpdateRequest = req.sanitizedBody
         if (Object.entries(userUpdateRequest).length === 0) return res.sendStatus(422)
 
         const userUpdate = await db.collection("users").updateOne({ _id: userId }, {
@@ -53,8 +49,7 @@ export async function updateUser(req, res) {
 
         return res.sendStatus(200)
 
-    } catch (err) {
-        if (err.isJoi) return res.sendStatus(422)
+    } catch (err) {        
         console.error(err)
         return res.sendStatus(500)
     }
@@ -73,8 +68,8 @@ export async function deleteUser(req, res) {
         if (!(userWasDeleted.deletedCount === 1)) throw new Error
         return res.sendStatus(200)
 
-    } catch (err) {
-        console.error(err)
+    } catch (err) {       
+        console.error(err) 
         return res.sendStatus(500)
     }
 }

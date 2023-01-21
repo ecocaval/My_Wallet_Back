@@ -8,16 +8,10 @@ let db
 let mongoClient = new MongoClient(process.env.DATABASE_URL)
 
 try {
-
     await mongoClient.connect()
-
     db = mongoClient.db()
-
-
-
 } catch (err) {
-
-    console.error(err);
+    console.error(err)
 }
 
 export default db

@@ -1,6 +1,6 @@
 //* Libraries
 import { ObjectId } from "mongodb";
-//* Config
+//* Configuration
 import db from "../config/dabaBaseConnection.js";
 
 export async function getUserTransactions(req, res) {
@@ -16,8 +16,8 @@ export async function getUserTransactions(req, res) {
         if(userTransactions.length === 0) return res.sendStatus(404)
         return res.send(userTransactions)
 
-    } catch (error) {
-        console.error(error);
+    } catch (err) {
+        console.error(err)
         return res.sendStatus(500)
     }
 }
@@ -28,16 +28,12 @@ export async function insertTransaction(req, res) {
     const userId = req.params.id
 
     try {
-
         await db.collection("transactions").insertOne({
             ...transaction, userId
         })
-
         return res.sendStatus(201)
-
-    } catch (error) {
-        console.error(error);
-        
+    } catch (err) {     
+        console.error(err)   
         return res.sendStatus(500)
     }
 }

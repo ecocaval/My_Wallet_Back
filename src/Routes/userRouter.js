@@ -7,7 +7,7 @@ import { logUserIn } from "../controllers/signInController.js";
 //* Middlewares
 import { validateToken } from "../middlewares/TokenMiddleware.js";
 import { validateSchema } from "../middlewares/SchemaMiddleware.js";
-import { UserCreationSchema, UserLoginSchema } from "../schemas/UserSchema.js";
+import { UserCreationSchema, UserLoginSchema, UserUpdateSchema } from "../schemas/UserSchema.js";
 
 const userRouter = Router();
 
@@ -19,7 +19,7 @@ userRouter.post("/sign-up", validateSchema(UserCreationSchema), createUser)
 
 userRouter.post("/sign-in", validateSchema(UserLoginSchema), logUserIn)
 
-userRouter.put("/update-user/:id", validateToken, updateUser)
+userRouter.put("/update-user/:id", validateToken, validateSchema(UserUpdateSchema), updateUser)
 
 userRouter.delete("/delete-user/:id", validateToken, deleteUser)
 
