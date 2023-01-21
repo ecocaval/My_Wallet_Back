@@ -4,19 +4,23 @@ import { Router } from "express";
 import { deleteUser, getUserById, getUsers, updateUser } from "../controllers/usersController.js";
 import { createUser } from "../controllers/signUpController.js";
 import { logUserIn } from "../controllers/signInController.js";
+//* Middlewares
+import { validateToken } from "../middlewares/TokenMiddleware.js";
+import { validateSchema } from "../middlewares/SchemaMiddleware.js";
+import { UserCreationSchema, UserLoginSchema } from "../schemas/UserSchema.js";
 
 const userRouter = Router();
 
-userRouter.get("/users", async (req, res) => getUsers(req, res))
+userRouter.get("/users", getUsers)
 
-userRouter.get("/users/:id", async (req, res) => getUserById(req, res))
+userRouter.get("/users/:id", validateToken, getUserById)
 
-userRouter.post("/sign-up", async (req, res) => createUser(req, res))
+userRouter.post("/sign-up", validateSchema(UserCreationSchema), createUser)
 
-userRouter.post("/sign-in", async (req, res) => logUserIn(req, res))
+userRouter.post("/sign-in", validateSchema(UserLoginSchema), logUserIn)
 
-userRouter.put("/update-user/:id", async (req, res) => updateUser(req, res))
+userRouter.put("/update-user/:id", validateToken, updateUser)
 
-userRouter.delete("/delete-user/:id", async (req, res) => deleteUser(req, res))
+userRouter.delete("/delete-user/:id", validateToken, deleteUser)
 
 export default userRouter

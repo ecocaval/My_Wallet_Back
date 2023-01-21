@@ -1,21 +1,16 @@
 //* Libraries
 import bcrypt from "bcrypt"
 import { v4 as uuidv4 } from "uuid"
-//* Schemas
-import { UserLoginSchema } from "../schemas/UserSchema.js"
 //* Configuration
 import db from "../config/dabaBaseConnection.js"
-//* functions
-import sanitizeInfo from "../validations/sanitizeInfo.js"
 
 export async function logUserIn(req, res) {
-
     try {
-        const userLoginRequest = await UserLoginSchema.validateAsync(sanitizeInfo(req.body), { abortEarly: false })
+        const userLoginRequest = req.sanitizedBody
 
         const user = await db.collection("users").findOne({ email: userLoginRequest.email })
 
-        if (!user) return res.status(404)
+        if (!user) return res.sendStatus(404)
 
         const PasswordIsCorrect = bcrypt.compareSync(userLoginRequest.password, user.password)
 
@@ -23,8 +18,8 @@ export async function logUserIn(req, res) {
 
         const userHasToken = await db.collection("tokens").findOne({ userId: user._id })
 
-        if(!userHasToken) {
-            
+        if (!userHasToken) {
+
             const token = uuidv4()
 
             const request = {
@@ -35,20 +30,22 @@ export async function logUserIn(req, res) {
             const insertToken = await db.collection("tokens").insertOne({
                 ...request, tokenDate: Date.now()
             })
-    
-            console.log(insertToken);
 
-            return res.status(200).send(`Bearer ${token}`)
+            if (insertToken.acknowledged === true) return res.status(200).send({
+                userId: user._id,
+                token: `Bearer ${token}`
+            })
+
+            else throw new Error
         }
 
-        return res.sendStatus(200)
+        return res.status(200).send({
+            userId: user._id,
+            token: `Bearer ${userHasToken.token}`
+        })
 
     } catch (err) {
-
-        if (err.isJoi) return res.sendStatus(422)
-
-        console.log(err);
-
+        console.error(err)
         return res.sendStatus(500)
     }
 }

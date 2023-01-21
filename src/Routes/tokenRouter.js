@@ -5,6 +5,6 @@ import { getTokens } from "../controllers/tokenControllers.js";
 
 const tokenRouter = Router();
 
-tokenRouter.get("/tokens", async (req, res) => getTokens(req, res))
+tokenRouter.get("/tokens", getTokens)
 
 export default tokenRouter

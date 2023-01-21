@@ -13,9 +13,11 @@ try {
 
     db = mongoClient.db()
 
+
+
 } catch (err) {
 
-    console.err(err);
+    console.error(err);
 }
 
 export default db
