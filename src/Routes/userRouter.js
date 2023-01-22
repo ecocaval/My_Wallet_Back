@@ -7,6 +7,7 @@ import { logUserIn } from "../controllers/signInController.js";
 //* Middlewares
 import { validateToken } from "../middlewares/TokenMiddleware.js";
 import { validateSchema } from "../middlewares/SchemaMiddleware.js";
+//* Schemas
 import { UserCreationSchema, UserLoginSchema, UserUpdateSchema } from "../schemas/UserSchema.js";
 
 const userRouter = Router();

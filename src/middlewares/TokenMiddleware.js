@@ -13,6 +13,7 @@ export async function validateToken(req, res, next) {
 
     try {
         const tokenInDb = await db.collection("tokens").findOne({ userId })
+
         if (tokenInDb?.token !== token) return res.sendStatus(401)
     } catch (err) {      
         console.error(err)
