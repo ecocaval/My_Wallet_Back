@@ -1,12 +1,15 @@
 //* Libraries
 import { Router } from "express";
+
 //* Controllers
 import { deleteUser, getUserById, getUsers, updateUser } from "../controllers/usersController.js";
 import { createUser } from "../controllers/signUpController.js";
 import { logUserIn } from "../controllers/signInController.js";
+
 //* Middlewares
 import { validateToken } from "../middlewares/TokenMiddleware.js";
 import { validateSchema } from "../middlewares/SchemaMiddleware.js";
+
 //* Schemas
 import { UserCreationSchema, UserLoginSchema, UserUpdateSchema } from "../schemas/UserSchema.js";
 
